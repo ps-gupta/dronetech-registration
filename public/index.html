@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dronetech — Student Registration Portal</title>
+    <meta
+      name="description"
+      content="Dronetech student registration portal — validated client and server side, stored persistently."
+    />
+    <meta name="theme-color" content="#040815" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23060914'/%3E%3Ccircle cx='16' cy='16' r='7' fill='none' stroke='%2322d3ee' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='2.4' fill='%2322d3ee'/%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <!-- Ambient background layers (purely decorative) -->
+    <div class="bg" aria-hidden="true">
+      <div class="orb orb-a"></div>
+      <div class="orb orb-b"></div>
+      <div class="grid-overlay"></div>
+      <canvas id="net"></canvas>
+      <div class="glow" id="glow"></div>
+      <div class="vignette"></div>
+    </div>
+
+    <!-- Corner HUD metadata -->
+    <p class="meta meta-tl mono" aria-hidden="true">DRN // STUDENT PORTAL</p>
+    <div class="meta meta-tr">
+      <span class="health-chip mono" id="health-chip" data-state="checking" role="status">
+        <span class="chip-dot" aria-hidden="true"></span>
+        <span class="chip-text">Checking API…</span>
+      </span>
+    </div>
+    <p class="meta meta-bl mono" aria-hidden="true">BUILD 2.1.0 · NODE 01</p>
+    <p class="meta meta-br mono" aria-hidden="true">SECURE CHANNEL · TLS 1.3</p>
+
+    <main class="stage">
+      <div class="rings" aria-hidden="true" data-depth="0.5"></div>
+
+      <section class="card" id="card" aria-labelledby="page-title">
+        <i class="corner tl" aria-hidden="true"></i>
+        <i class="corner tr" aria-hidden="true"></i>
+        <i class="corner bl" aria-hidden="true"></i>
+        <i class="corner br" aria-hidden="true"></i>
+
+        <header class="card-head">
+          <div class="drone-wrap parallax" data-depth="0.35" aria-hidden="true">
+            <svg class="drone" viewBox="0 0 96 96" fill="none">
+              <defs>
+                <linearGradient id="dg" x1="0" y1="0" x2="96" y2="96" gradientUnits="userSpaceOnUse">
+                  <stop offset="0" stop-color="#38e0f8" />
+                  <stop offset="1" stop-color="#8b5cf6" />
+                </linearGradient>
+              </defs>
+              <g stroke="url(#dg)" stroke-width="2.4" stroke-linecap="round">
+                <path d="M42 42 27 27" />
+                <path d="M54 42 69 27" />
+                <path d="M42 54 27 69" />
+                <path d="M54 54 69 69" />
+                <rect x="39" y="39" width="18" height="18" rx="5" transform="rotate(45 48 48)" />
+                <circle cx="24" cy="24" r="10.5" opacity="0.9" />
+                <circle cx="72" cy="24" r="10.5" opacity="0.9" />
+                <circle cx="24" cy="72" r="10.5" opacity="0.9" />
+                <circle cx="72" cy="72" r="10.5" opacity="0.9" />
+              </g>
+              <g class="rotor-ring" style="transform-origin: 24px 24px">
+                <circle cx="24" cy="24" r="13.5" stroke="#38e0f8" stroke-width="1.2" stroke-dasharray="4 8" opacity="0.55" />
+              </g>
+              <g class="rotor-ring reverse" style="transform-origin: 72px 24px">
+                <circle cx="72" cy="24" r="13.5" stroke="#8b5cf6" stroke-width="1.2" stroke-dasharray="4 8" opacity="0.55" />
+              </g>
+              <g class="rotor-ring reverse" style="transform-origin: 24px 72px">
+                <circle cx="24" cy="72" r="13.5" stroke="#8b5cf6" stroke-width="1.2" stroke-dasharray="4 8" opacity="0.55" />
+              </g>
+              <g class="rotor-ring" style="transform-origin: 72px 72px">
+                <circle cx="72" cy="72" r="13.5" stroke="#38e0f8" stroke-width="1.2" stroke-dasharray="4 8" opacity="0.55" />
+              </g>
+              <circle cx="48" cy="48" r="3" fill="#38e0f8" />
+            </svg>
+          </div>
+          <p class="sysline mono" aria-hidden="true">SYS.ONLINE // FORM-01</p>
+          <h1 id="page-title">Dronetech</h1>
+          <p class="sub">Student Registration Portal</p>
+        </header>
+
+        <div class="divider" aria-hidden="true"><span class="mono">REGISTRATION FORM</span></div>
+
+        <form id="reg-form" novalidate autocomplete="on">
+          <div class="field" data-field="name">
+            <div class="label-row">
+              <label for="f-name">Full Name</label>
+              <span class="chip mono" aria-hidden="true">01</span>
+            </div>
+            <div class="control">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+              <input
+                id="f-name"
+                name="name"
+                type="text"
+                placeholder="e.g., Ananya Sharma"
+                autocomplete="name"
+                spellcheck="false"
+                maxlength="80"
+                required
+                aria-describedby="e-name"
+              />
+            </div>
+            <p class="error" id="e-name" aria-live="polite"></p>
+          </div>
+
+          <div class="field" data-field="sapId">
+            <div class="label-row">
+              <label for="f-sap">SAP ID</label>
+              <span class="chip mono" aria-hidden="true">02</span>
+            </div>
+            <div class="control">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M3 7V5a2 2 0 0 1 2-2h2" />
+                <path d="M17 3h2a2 2 0 0 1 2 2v2" />
+                <path d="M21 17v2a2 2 0 0 1-2 2h-2" />
+                <path d="M7 21H5a2 2 0 0 1-2-2v-2" />
+                <path d="M4 12h16" />
+              </svg>
+              <input
+                id="f-sap"
+                name="sapId"
+                type="text"
+                inputmode="numeric"
+                placeholder="500123456"
+                autocomplete="off"
+                spellcheck="false"
+                maxlength="9"
+                required
+                aria-describedby="e-sap"
+              />
+            </div>
+            <p class="error" id="e-sap" aria-live="polite"></p>
+          </div>
+
+          <div class="field" data-field="phone">
+            <div class="label-row">
+              <label for="f-phone">Phone Number</label>
+              <span class="chip mono" aria-hidden="true">03</span>
+            </div>
+            <div class="control">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
+              </svg>
+              <input
+                id="f-phone"
+                name="phone"
+                type="tel"
+                inputmode="numeric"
+                placeholder="9876543210"
+                autocomplete="tel"
+                spellcheck="false"
+                maxlength="10"
+                required
+                aria-describedby="e-phone"
+              />
+            </div>
+            <p class="error" id="e-phone" aria-live="polite"></p>
+          </div>
+
+          <div class="field" data-field="collegeEmail">
+            <div class="label-row">
+              <label for="f-email">College Email</label>
+              <span class="chip mono" aria-hidden="true">04</span>
+            </div>
+            <div class="control">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect width="20" height="16" x="2" y="4" rx="2" />
+                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+              </svg>
+              <input
+                id="f-email"
+                name="collegeEmail"
+                type="email"
+                placeholder="student@college.edu"
+                autocomplete="email"
+                spellcheck="false"
+                maxlength="254"
+                required
+                aria-describedby="e-email"
+              />
+            </div>
+            <p class="error" id="e-email" aria-live="polite"></p>
+          </div>
+
+          <button class="btn" id="submit-btn" type="submit">
+            <span class="btn-label">Register</span>
+            <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M5 12h14" />
+              <path d="m12 5 7 7-7 7" />
+            </svg>
+            <span class="btn-spinner" aria-hidden="true"></span>
+          </button>
+        </form>
+
+        <div class="form-status" id="form-status" role="status" aria-live="polite" hidden></div>
+
+        <div class="success" id="success-panel" hidden>
+          <svg class="check" viewBox="0 0 52 52" aria-hidden="true">
+            <circle class="check-ring" cx="26" cy="26" r="23" fill="none" />
+            <path class="check-mark" fill="none" d="M15 27l7 7 15-15" />
+          </svg>
+          <h2 id="success-heading" tabindex="-1">Registration confirmed</h2>
+          <p class="success-sub">
+            Welcome aboard, <span id="s-name">Student</span>.
+          </p>
+          <dl class="success-rows mono">
+            <div class="srow">
+              <dt>REFERENCE</dt>
+              <dd id="s-ref">DRN-00000000</dd>
+            </div>
+            <div class="srow">
+              <dt>SAP ID</dt>
+              <dd id="s-sap">—</dd>
+            </div>
+            <div class="srow">
+              <dt>EMAIL</dt>
+              <dd id="s-email">—</dd>
+            </div>
+          </dl>
+          <p class="success-note">
+            Keep your reference code — it identifies this registration in Dronetech records.
+          </p>
+          <button class="btn ghost" id="btn-again" type="button">
+            <span class="btn-label">Register another student</span>
+          </button>
+        </div>
+
+        <p class="card-foot mono" aria-hidden="true">END-TO-END VALIDATED · DRN-PORTAL</p>
+      </section>
+    </main>
+
+    <footer class="page-foot">
+      <p class="mono">© 2026 DRONETECH SYSTEMS · DATA STORED ONLY AFTER SERVER CONFIRMATION</p>
+    </footer>
+
+    <noscript>
+      <div class="noscript">This portal requires JavaScript to submit your registration securely.</div>
+    </noscript>
+
+    <script src="/js/app.js" defer></script>
+  </body>
+</html>

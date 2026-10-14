@@ -1,0 +1,13 @@
+# Dependencies
+node_modules/
+
+# Environment & secrets
+.env
+
+# Local development database files (scripts/dev-mongo.js)
+data/
+
+# Logs & OS noise
+*.log
+.DS_Store
+Thumbs.db
